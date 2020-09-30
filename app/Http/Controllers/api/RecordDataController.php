@@ -16,33 +16,31 @@ class RecordDataController extends Controller
 
     public function record(Request $request)
     {
-        return response()->json([
+		$ans = $request->data;
+        
+
+
+        $credentials["username"] = $ans["username"];
+        $credentials['password'] = '123456';
+   
+        if(Auth('api')->attempt($credentials)){
+            $user =auth('api')->user();
+            $data = new Data();
+            $data->user_id = $user->id;
+            $data->q = json_encode($ans["data"]);
+            $data->type = $request->type;
+            $data->save();
+            return response()->json([
                 'status' => true,
                 'message' => "data recorded on database."
             ], 200);
-
-
-//        $credentials = $request->only('username');
-//        $credentials['password'] = '123456';
-//
-//        if(Auth('api')->attempt($credentials)){
-//            $user =auth('api')->user();
-//            $data = new Data();
-//            $data->user_id = $user->id;
-//            $data->q = $request->data;
-//            $data->type = $request->type;
-//            $data->save();
-//            return response()->json([
-//                'status' => true,
-//                'message' => "data recorded on database."
-//            ], 200);
-//        }else
-//        {
-//            return response()->json([
-//                'status' => false,
-//                'message' => "unauthorized."
-//            ], 401);
-//        }
+        }else
+        {
+            return response()->json([
+                'status' => false,
+                'message' => "unauthorized."
+            ], 401);
+        }
     }
 
     public function getAll()
