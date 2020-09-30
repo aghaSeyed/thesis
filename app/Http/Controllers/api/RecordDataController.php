@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Data;
+use App\Http\Resources\Question as QuestionResource;
 use App\Http\Controllers\Controller;
 use App\Question;
 use Illuminate\Http\Request;
@@ -47,10 +48,10 @@ class RecordDataController extends Controller
     public function getAll()
     {
         header('Access-Control-Allow-Origin: *');
-        $questions = Question::all()->toArray();
+        $questions = QuestionResource::collection(Question::all());
         return [
           "status" => true,
-          "message"=> "ok"
+          "questions"=> $questions,
         ];
 
     }
